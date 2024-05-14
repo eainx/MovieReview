@@ -2,27 +2,163 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>main</title>
+    <title>Movie Reviews</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .logout-btn {
+            background-color: #A15275;
+        }
+
+        .logout-btn:hover {
+            background-color: #943a5f;
+        }
+        .user-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .user-info label {
+            color: #a15275;
+            font-weight: bold;
+        }
+
+    </style>
 </head>
+
 <body>
 
-<form action="/register" method="post">
-    <label for="user_id">ID:</label><br>
-    <input id="user_id" type="text" name="id" value=""><br>
+<div class="container">
 
-    <label for="user_pwd">PASSWORD:</label><br>
-    <input id="user_pwd" type="password" name="password" value=""><br><br>
+    <h1>Movies</h1>
 
-    <input type="submit" name="send" value="login">
-    <input type="submit" name="send" value="sign up">
-</form>
+    <div class="user-info">
+        <label for="user_id">ID: </label>
+        <a href="{{ url_for('user_info', id=user_id) }}">
+            <button class="button">{{ user_id }}</button>
+        </a><br>
+        <form action="/logout" method="post">
+            <button class="button logout-btn" type="submit" name="re_turn">Logout</button>
+        </form><br>
+    </div>
 
-<form action="/print_table" method="post">
-    <input type="submit" name="send" value="print">
-</form>
+    <form action="/sort" method="post">
+        <input class="button" type="submit" name="sort_movies" value="latest">
+        <input class="button" type="submit" name="sort_movies" value="genre">
+        <input class="button" type="submit" name="sort_movies" value="ratings">
+    </form>
 
-<!--{{ x }} <br>-->
-<!--{{ y }}-->
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Ratings</th>
+                <th>Director</th>
+                <th>Genre</th>
+                <th>Release Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for movie in movies %}
+            <tr>
+                <td><a href="{{ url_for('movie_info', mid=movie[0]) }}" class="button">{{ movie[1] }}</a></td>
+                <td>{{ avg_ratings[movie[0]] }}</td>
+                <td>{{ movie[2] }}</td>
+                <td>{{ movie[3] }}</td>
+                <td>{{ movie[4] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h1>Reviews</h1>
+
+    <form action="/sort" method="post">
+        <input class="button" type="submit" name="sort_reviews" value="latest">
+        <input class="button" type="submit" name="sort_reviews" value="title">
+        <input class="button" type="submit" name="sort_reviews" value="followers">
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Ratings</th>
+                <th>User</th>
+                <th>Title</th>
+                <th>Review</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for review in reviews %}
+            <tr>
+                <td>{{ review[2] }}</td>
+                <td><a href="{{ url_for('user_info', id=review[1]) }}" class="button">{{ review[1] }}</a></td>
+                <td><a href="{{ url_for('movie_info', mid=review[0]) }}" class="button">{{ movie_titles[review[0]] }}</a></td>
+                <td>{{ review[3] }}</td>
+                <td>{{ review[4] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
 
 </body>
 </html>
